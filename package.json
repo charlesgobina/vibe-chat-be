@@ -6,8 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc --watch",
     "build": "tsc && chmod 755 ./build/server.js",
-    "builds": "tsc && chmod 755 ./stategraph.ts",
-    "dev": "npm run build && nodemon --watch 'src/**/*.ts' --exec 'node' ./build/server.js"
+    "buildWindows": "tsc && icacls ./build/server.js /grant Everyone:(RX)",
+    "dev": "npm run build && nodemon --watch 'src/**/*.ts' --exec 'node' ./build/server.js",
+    "dev:windows": "npm run buildWindows && nodemon --watch src --exec node ./build/server.js"
   },
   "keywords": [],
   "author": "",

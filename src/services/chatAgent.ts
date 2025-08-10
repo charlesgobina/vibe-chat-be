@@ -39,7 +39,7 @@ export class ChatAgentService {
    * Priority: OpenAI > Google > Groq
    */
   private initializeModel(): void {
-    const modelConfig = { temperature: 0.8 };
+    const modelConfig = { temperature: 0.8, reasoning_effort: 'high' };
     
     if (process.env.OPENAI_API_KEY) {
       this.model = new ChatOpenAI({
@@ -56,7 +56,9 @@ export class ChatAgentService {
       Logger.info('Initialized Google Gemini model');
     } else if (process.env.GROQ_API_KEY) {
       this.model = new ChatGroq({
-        model: 'llama-3.3-70b-versatile',
+        // model: 'llama-3.3-70b-versatile',
+        model: 'openai/gpt-oss-120b',
+        // tools: [{"type":"browser_search"}],
         ...modelConfig
       });
       Logger.info('Initialized Groq model with tool calling support');

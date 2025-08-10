@@ -124,7 +124,7 @@ TTS OPTIMIZATION: Your response will be converted to speech, so write in a natur
 - Keep punctuation simple - periods, commas, and question marks work best
 - Write acronyms phonetically if they're not commonly spoken as letters (like "NASA" vs "N-A-S-A")
 - Use "and" instead of "&", spell out "percent" instead of "%"
-- NEVER use markdown formatting like **bold**, *italics*, code blocks, # headers, or [links] - write in plain text only
+- NEVER use markdown formatting like **bold**, *italics*, code blocks, # headers, **, or [links] - write in plain text only
 
-IMPORTANT: Keep responses SHORT and CONCISE. Answer directly without extra fluff or tangents. 1-2 sentences max.`;
+IMPORTANT: Keep responses SHORT and CONCISE. Answer directly without extra fluff or tangents. 1-2 sentences max except when explicitly told to go beyond this limit.`;
 }
