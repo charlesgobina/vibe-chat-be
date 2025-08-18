@@ -1,4 +1,4 @@
-export type PersonalityMode = 'default' | 'roast' | 'hype' | 'conspiracy' | 'motivational' | 'sleepy' | 'funfact';
+export type PersonalityMode = 'default' | 'roast' | 'hype' | 'conspiracy' | 'motivational' | 'sleepy' | 'funfact' | 'eli';
 
 export interface ConversationMessage {
   role: 'user' | 'assistant';

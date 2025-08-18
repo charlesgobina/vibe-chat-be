@@ -636,7 +636,8 @@ export class ChatAgentService {
       conspiracy: ["What are they hiding about this? 👁️", "What's the real truth here?"],
       motivational: ["How can I dominate this? 💪", "What's my next power move?"],
       sleepy: ["Tell me a dreamy story about this 😴", "What peaceful thoughts come to mind?"],
-      funfact: ["That's interesting! Speaking of that... 🤓", "Oh, that reminds me of a cool fact!"]
+      funfact: ["That's interesting! Speaking of that... 🤓", "Oh, that reminds me of a cool fact!"],
+      eli: ["What does the Bible say about this? ✝️", "Can you share a scripture that relates?"]
     };
 
     return [...baseQuestions.slice(0, 2), ...personalityQuestions[personality]];
