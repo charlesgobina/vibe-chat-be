@@ -171,6 +171,9 @@ export class ChatController {
       };
       res.write(`data: ${JSON.stringify(startChunk)}\n\n`);
 
+      // Store session ID globally for tools to access
+      global.currentSessionId = sessionId;
+
       // Stream the response
       for await (const chunk of this.chatAgent.streamMessage(request, sessionId, requestId)) {
         const streamChunk: StreamChunk = {
@@ -185,6 +188,9 @@ export class ChatController {
       }
 
       // Memory is automatically saved by the ChatAgentService during streaming
+      
+      // Clean up global session ID
+      delete global.currentSessionId;
 
       const responseTime = Date.now() - startTime;
       const confidence = 0.85 + Math.random() * 0.15;
@@ -244,7 +250,13 @@ export class ChatController {
     
     Logger.debug('Processing regular (non-streaming) response', { requestId });
     
+    // Store session ID globally for tools to access
+    global.currentSessionId = sessionId;
+    
     const response = await this.chatAgent.processMessage(request, sessionId, requestId);
+    
+    // Clean up global session ID
+    delete global.currentSessionId;
     const responseTime = Date.now() - startTime;
 
     Logger.logChatResponse(requestId, {

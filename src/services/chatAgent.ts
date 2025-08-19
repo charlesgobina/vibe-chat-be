@@ -9,6 +9,7 @@ import { getPersonalityPrompt } from './personalities';
 import { Logger } from '../utils/logger';
 import { WebSearchTool } from '../tools/webSearchTool';
 import { SpotifyTool } from '../tools/spotifyTool';
+import { DelayedActionTool } from '../tools/delayedActionTool';
 import dotenv from "dotenv";
 dotenv.config(); 
 
@@ -27,7 +28,9 @@ export class ChatAgentService {
 
   constructor() {
     this.tools = [
-      new SpotifyTool()
+      new SpotifyTool(),
+      new WebSearchTool(),
+      new DelayedActionTool(),
       // Add other tools here as needed
     ];
     this.initializeModel();
