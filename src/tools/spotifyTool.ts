@@ -143,7 +143,7 @@ DO NOT use XML-like syntax or function calls. Use only the colon-separated forma
         })
       });
 
-      const success = response.status === 204;
+      const success = response.status === 200;
       Logger.debug('Device activation result', { requestId, deviceId, success, status: response.status });
       return success;
     } catch (error) {
@@ -436,7 +436,7 @@ DO NOT use XML-like syntax or function calls. Use only the colon-separated forma
         }
       }
 
-      if (playResponse.status === 204) {
+      if (playResponse.status === 200) {
         const artists = track.artists.map(artist => artist.name).join(', ');
         return `🎵 Now playing: **${track.name}** by ${artists}`;
       } else if (playResponse.status === 404) {
@@ -473,7 +473,10 @@ DO NOT use XML-like syntax or function calls. Use only the colon-separated forma
         }
       });
 
-      if (response.status === 204) {
+      if (response.status === 200) {
+        console.log("##############################################");
+        console.log(response.status)
+        console.log("##############################################");
         return '⏸️ Music paused';
       } else if (response.status === 404) {
         return 'No active Spotify device found. Make sure Spotify is open and playing.';
@@ -500,7 +503,10 @@ DO NOT use XML-like syntax or function calls. Use only the colon-separated forma
         }
       });
 
-      if (response.status === 204) {
+      if (response.status === 200) {
+        console.log("##############################################");
+        console.log(response.status)
+        console.log("##############################################");
         return '▶️ Music resumed';
       } else if (response.status === 404) {
         return 'No active Spotify device found. Make sure Spotify is open.';
@@ -527,7 +533,7 @@ DO NOT use XML-like syntax or function calls. Use only the colon-separated forma
         }
       });
 
-      if (response.status === 204) {
+      if (response.status === 200) {
         return '⏭️ Skipped to next track';
       } else if (response.status === 404) {
         return 'No active Spotify device found. Make sure Spotify is open and playing.';
@@ -553,7 +559,7 @@ DO NOT use XML-like syntax or function calls. Use only the colon-separated forma
         }
       });
 
-      if (response.status === 204) {
+      if (response.status === 200) {
         // Nothing playing, but let's check if there are devices and provide helpful info
         const devices = await this.getAvailableDevices(requestId);
         if (devices.length > 0) {

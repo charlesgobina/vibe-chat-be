@@ -3,10 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import chatRoutes from './routes/chat';
 import spotifyRoutes from './routes/spotify';
-import delayedActionRoutes, { initializeDelayedActionProcessor } from './routes/delayedAction';
+// import delayedActionRoutes, { initializeDelayedActionProcessor } from './routes/delayedAction';
 import { requestLoggingMiddleware, errorLoggingMiddleware, performanceLoggingMiddleware } from './middleware/logging';
 import { Logger } from './utils/logger';
-import { DelayedActionProcessor } from './services/delayedActionProcessor';
+// import { DelayedActionProcessor } from './services/delayedActionProcessor';
 import { ChatController } from './controllers/chatController';
 
 dotenv.config();
@@ -62,7 +62,7 @@ app.use(express.json());
 
 app.use('/api', chatRoutes);
 app.use('/api/spotify', spotifyRoutes);
-app.use('/api/delayed', delayedActionRoutes);
+// app.use('/api/delayed', delayedActionRoutes);
 
 // Add error logging middleware last
 app.use(errorLoggingMiddleware);
@@ -72,57 +72,57 @@ app.get('/api/health', (req, res) => {
 });
 
 // Initialize delayed action processor
-const delayedActionProcessor = new DelayedActionProcessor();
+// const delayedActionProcessor = new DelayedActionProcessor();
 
 // Set up callback to handle delayed action execution
-delayedActionProcessor.setCallback(async (sessionId: string, message: string) => {
-  try {
-    // Make an HTTP request back to our own chat endpoint
-    const chatRequest = {
-      message: message,
-      personality: 'default',
-      mood: 50,
-      userId: sessionId,
-      conversationHistory: []
-    };
+// delayedActionProcessor.setCallback(async (sessionId: string, message: string) => {
+//   try {
+//     // Make an HTTP request back to our own chat endpoint
+//     const chatRequest = {
+//       message: message,
+//       personality: 'default',
+//       mood: 50,
+//       userId: sessionId,
+//       conversationHistory: []
+//     };
 
-    Logger.info('Making delayed chat request', { sessionId, message, timestamp: new Date().toISOString() });
+//     Logger.info('Making delayed chat request', { sessionId, message, timestamp: new Date().toISOString() });
 
-    const response = await fetch(`http://localhost:${PORT}/api/agent/chat?sessionId=${sessionId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Delayed-Action': 'true' // Flag to identify delayed actions
-      },
-      body: JSON.stringify(chatRequest)
-    });
+//     const response = await fetch(`http://localhost:${PORT}/api/agent/chat?sessionId=${sessionId}`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'X-Delayed-Action': 'true' // Flag to identify delayed actions
+//       },
+//       body: JSON.stringify(chatRequest)
+//     });
 
-    if (response.ok) {
-      const result = await response.json() as { message: string };
-      Logger.info('Delayed chat request successful', { 
-        sessionId, 
-        originalMessage: message,
-        aiResponse: result.message?.substring(0, 100) + '...'
-      });
-    } else {
-      Logger.error('Delayed chat request failed', new Error(`HTTP ${response.status}`), { 
-        sessionId, 
-        message,
-        status: response.status 
-      });
-    }
+//     if (response.ok) {
+//       const result = await response.json() as { message: string };
+//       Logger.info('Delayed chat request successful', { 
+//         sessionId, 
+//         originalMessage: message,
+//         aiResponse: result.message?.substring(0, 100) + '...'
+//       });
+//     } else {
+//       Logger.error('Delayed chat request failed', new Error(`HTTP ${response.status}`), { 
+//         sessionId, 
+//         message,
+//         status: response.status 
+//       });
+//     }
     
-  } catch (error) {
-    Logger.error('Error executing delayed action callback', error as Error, { sessionId, message });
-  }
-});
+//   } catch (error) {
+//     Logger.error('Error executing delayed action callback', error as Error, { sessionId, message });
+//   }
+// });
 
 // Initialize the processor in the routes
-initializeDelayedActionProcessor(delayedActionProcessor);
+// initializeDelayedActionProcessor(delayedActionProcessor);
 
 app.listen(PORT, () => {
   // Start the delayed action processor
-  delayedActionProcessor.start();
+  // delayedActionProcessor.start();
   
   Logger.info('Server started successfully', {
     port: PORT,
@@ -144,13 +144,13 @@ app.listen(PORT, () => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
   Logger.info('SIGTERM received, stopping delayed action processor');
-  delayedActionProcessor.stop();
+  // delayedActionProcessor.stop();
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
   Logger.info('SIGINT received, stopping delayed action processor');
-  delayedActionProcessor.stop();
+  // delayedActionProcessor.stop();
   process.exit(0);
 });
 
