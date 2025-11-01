@@ -8,6 +8,7 @@ import { AgentRequest, AgentResponse, ConversationMessage, PersonalityMode } fro
 import { getPersonalityPrompt } from './personalities';
 import { Logger } from '../utils/logger';
 import { WebSearchTool } from '../tools/webSearchTool';
+import { WebOpenTool } from '../tools/webOpenTool';
 import { SpotifyTool } from '../tools/spotifyTool';
 // import { DelayedActionTool } from '../tools/delayedActionTool';
 import dotenv from "dotenv";
@@ -30,6 +31,7 @@ export class ChatAgentService {
     this.tools = [
       new SpotifyTool(),
       new WebSearchTool(),
+      new WebOpenTool(),
       // new DelayedActionTool(),
       // Add other tools here as needed
     ];
