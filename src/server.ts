@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import chatRoutes from './routes/chat';
 import spotifyRoutes from './routes/spotify';
+import ttsRoutes from './routes/tts';
 // import delayedActionRoutes, { initializeDelayedActionProcessor } from './routes/delayedAction';
 import { requestLoggingMiddleware, errorLoggingMiddleware, performanceLoggingMiddleware } from './middleware/logging';
 import { Logger } from './utils/logger';
@@ -58,9 +59,10 @@ app.use(cors({
   exposedHeaders: ['Content-Length', 'X-Request-ID']
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
 
 app.use('/api', chatRoutes);
+app.use('/api', ttsRoutes);
 app.use('/api/spotify', spotifyRoutes);
 // app.use('/api/delayed', delayedActionRoutes);
 
