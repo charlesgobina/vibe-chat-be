@@ -41,37 +41,83 @@ export class ChatAgentService {
 
   /**
    * Initialize the appropriate LLM model based on available API keys
-   * Priority: OpenAI > Google > Groq
+   * Priority: AI_PROVIDER override > Groq > OpenAI > Google
    */
   private initializeModel(): void {
     const modelConfig = { temperature: 0.8, reasoning_effort: 'high' };
-    
-    if (process.env.OPENAI_API_KEY) {
+
+    const hasUsableKey = (value?: string): boolean => {
+      if (!value) return false;
+      const trimmed = value.trim();
+      if (!trimmed) return false;
+      return !trimmed.startsWith('your_');
+    };
+
+    const hasGroq = hasUsableKey(process.env.GROQ_API_KEY);
+    const hasOpenAI = hasUsableKey(process.env.OPENAI_API_KEY);
+    const hasGoogle = hasUsableKey(process.env.GOOGLE_API_KEY);
+    const requestedProvider = (process.env.AI_PROVIDER || '').trim().toLowerCase();
+
+    const initGroq = (): void => {
+      this.model = new ChatGroq({
+        model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
+        ...modelConfig
+      });
+      Logger.info('Initialized Groq model with tool calling support');
+    };
+
+    const initOpenAI = (): void => {
       this.model = new ChatOpenAI({
-        modelName: 'gpt-4o-mini',
+        modelName: process.env.OPENAI_MODEL || 'gpt-4o-mini',
         streaming: true,
         ...modelConfig
       });
       Logger.info('Initialized OpenAI model');
-    } else if (process.env.GOOGLE_API_KEY) {
+    };
+
+    const initGoogle = (): void => {
       this.model = new ChatGoogleGenerativeAI({
-        model: 'gemini-1.5-flash',
+        model: process.env.GOOGLE_MODEL || 'gemini-1.5-flash',
         ...modelConfig
       });
       Logger.info('Initialized Google Gemini model');
-    } else if (process.env.GROQ_API_KEY) {
-      this.model = new ChatGroq({
-        // model: 'llama-3.3-70b-versatile',
-        model: 'openai/gpt-oss-120b',
-        // tools: [{"type":"browser_search"}],
-        ...modelConfig
-      });
-      Logger.info('Initialized Groq model with tool calling support');
-    } else {
-      const error = 'No API key found. Please set OPENAI_API_KEY, GOOGLE_API_KEY, or GROQ_API_KEY in your environment variables.';
-      Logger.error('Model initialization failed', new Error(error));
-      throw new Error(error);
+    };
+
+    if (requestedProvider) {
+      if (requestedProvider === 'groq') {
+        if (!hasGroq) throw new Error('AI_PROVIDER=groq but GROQ_API_KEY is missing or invalid.');
+        initGroq();
+        return;
+      }
+      if (requestedProvider === 'openai') {
+        if (!hasOpenAI) throw new Error('AI_PROVIDER=openai but OPENAI_API_KEY is missing or invalid.');
+        initOpenAI();
+        return;
+      }
+      if (requestedProvider === 'google') {
+        if (!hasGoogle) throw new Error('AI_PROVIDER=google but GOOGLE_API_KEY is missing or invalid.');
+        initGoogle();
+        return;
+      }
+      throw new Error(`Unsupported AI_PROVIDER "${process.env.AI_PROVIDER}". Use one of: groq, openai, google.`);
     }
+
+    if (hasGroq) {
+      initGroq();
+      return;
+    }
+    if (hasOpenAI) {
+      initOpenAI();
+      return;
+    }
+    if (hasGoogle) {
+      initGoogle();
+      return;
+    }
+
+    const error = 'No API key found. Please set GROQ_API_KEY, OPENAI_API_KEY, or GOOGLE_API_KEY in your environment variables.';
+    Logger.error('Model initialization failed', new Error(error));
+    throw new Error(error);
   }
 
   /**

@@ -24,7 +24,7 @@ export interface RhubarbResult {
   mouthCues: RhubarbMouthCue[];
 }
 
-const RHUBARB_BINARY = process.env.RHUBARB_BINARY || '/home/cloud/Rhubarb-Lip-Sync-1.14.0-Linux/rhubarb';
+const RHUBARB_BINARY = process.env.RHUBARB_BINARY || 'rhubarb';
 const FFMPEG_BINARY = process.env.FFMPEG_BINARY || 'ffmpeg';
 
 const runProcess = (command: string, args: string[], cwd?: string): Promise<void> => {
@@ -36,7 +36,13 @@ const runProcess = (command: string, args: string[], cwd?: string): Promise<void
       stderr += chunk.toString();
     });
 
-    child.on('error', (error) => {
+    child.on('error', (error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') {
+        reject(new Error(
+          `Command not found: ${command}. Set ${command === RHUBARB_BINARY ? 'RHUBARB_BINARY' : 'FFMPEG_BINARY'} to a valid executable path or install it in PATH.`
+        ));
+        return;
+      }
       reject(error);
     });
 
