@@ -60,7 +60,7 @@ export class ChatAgentService {
 
     const initGroq = (): void => {
       this.model = new ChatGroq({
-        model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
+        model: process.env.GROQ_MODEL || 'openai/gpt-oss-20b',
         ...modelConfig
       });
       Logger.info('Initialized Groq model with tool calling support');
